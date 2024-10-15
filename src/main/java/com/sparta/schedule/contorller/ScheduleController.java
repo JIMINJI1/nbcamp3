@@ -1,0 +1,49 @@
+package com.sparta.schedule.contorller;
+
+import com.sparta.schedule.dto.CreateScheduleRequestDto;
+import com.sparta.schedule.dto.ScheduleResponseDto;
+import com.sparta.schedule.dto.UpdateScheduleRequestDto;
+import com.sparta.schedule.service.ScheduleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/schedule")
+public class ScheduleController {
+    private final ScheduleService scheduleService;
+
+    //  1.일정 등록
+    @PostMapping("")
+    public ScheduleResponseDto createSchedule(@RequestBody CreateScheduleRequestDto requestDto) {
+        return scheduleService.createSchedule(requestDto);
+    }
+
+    //  2.일정 전체 조회
+    @GetMapping("")
+    public List<ScheduleResponseDto> getAllSchedules()  {
+        return scheduleService.getAllSchedules();
+    }
+
+    //  3.일정 단건 조회
+    @GetMapping("/{scheduleId}")
+    public ScheduleResponseDto getScheduleById(@PathVariable Long scheduleId) {
+        return scheduleService.getScheduleById(scheduleId);
+    }
+
+    //  4.일정 수정
+    @PutMapping("/{scheduleId}")
+    public ScheduleResponseDto updateSchedule(@PathVariable Long scheduleId, @RequestBody UpdateScheduleRequestDto requestDto) {
+        return scheduleService.updateSchedule(scheduleId, requestDto);
+    }
+
+    //  5.일정 삭제
+    @DeleteMapping("/{scheduleId}")
+    public void deleteSchedule(@PathVariable Long scheduleId) {
+        scheduleService.deleteSchedule(scheduleId);
+    }
+
+
+}
