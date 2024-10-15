@@ -27,8 +27,9 @@ public class Schedule {
     @Column(name="schedule_id", nullable=false, updatable=false)
     private Long scheduleId;
 
-    @Column(name="username", nullable=false)
-    private String username;
+    // @Column(name="username", nullable=false)
+    //private String username;
+    // =>  username 대신 user_id로
 
     @Column(name="title", nullable=false)
     private String title;
@@ -46,19 +47,25 @@ public class Schedule {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
+    // 스케줄과 댓글 (하나의 스케줄 여러개 댓글)
     @OneToMany(mappedBy ="schedule", cascade=CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public Schedule(String username,  String title,  String content) {
-        this.username = username;
+    // 스케줄과 유저 (한 유저의 여러개 스케줄)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")
+    private User user;
+
+    public Schedule(User user,  String title,  String content) {
+        this.user = user;
         this.title = title;
         this.content = content;
     }
 
-    public Schedule(Long scheduleId, String username, String title,  String content,  LocalDateTime createdAt,
+    public Schedule(Long scheduleId, User user, String title,  String content,  LocalDateTime createdAt,
                     LocalDateTime updatedAt) {
         this.scheduleId = scheduleId;
-        this.username = username;
+        this.user = user;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;

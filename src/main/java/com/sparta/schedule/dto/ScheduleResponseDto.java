@@ -17,9 +17,10 @@ public class ScheduleResponseDto {
     private LocalDateTime updatedAt;
 
 
+
     public ScheduleResponseDto(Schedule schedule) {
         this.scheduleId = schedule.getScheduleId();
-        this.username = schedule.getUsername();
+        this.username = schedule.getUser() != null ? schedule.getUser().getUsername() : null;
         this.title = schedule.getTitle();
         this.content = schedule.getContent();
         this.createdAt = schedule.getCreatedAt();

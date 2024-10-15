@@ -5,6 +5,7 @@ import com.sparta.schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.dto.UpdateScheduleRequestDto;
 import com.sparta.schedule.entity.Schedule;
 import com.sparta.schedule.repository.ScheduleRepository;
+import com.sparta.schedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +23,13 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
     
     // 1. 일정 등록
     public ScheduleResponseDto createSchedule(CreateScheduleRequestDto requestDto){
         // dto -> entity
         Schedule schedule = new Schedule(
-                requestDto.getUsername(),
+                userRepository.findById(requestDto.getUserId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다")),
                 requestDto.getTitle(),
                 requestDto.getContent()
         );
@@ -56,7 +58,7 @@ public class ScheduleService {
         // entity -> responseDto
         return new ScheduleResponseDto(
                 schedule.getScheduleId(),
-                schedule.getUsername(),
+                schedule.getUser().getUsername(),
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getCreatedAt(),
@@ -84,7 +86,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
 
         if(schedule == null){
-            throw new IllegalArgumentException("일정이 존재하지 않지 않습니다");
+            throw new IllegalArgumentException("일정이 존재하지 않습니다");
         }
         scheduleRepository.deleteById(scheduleId);
 
