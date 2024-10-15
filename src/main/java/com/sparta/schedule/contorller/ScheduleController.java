@@ -5,6 +5,10 @@ import com.sparta.schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.dto.UpdateScheduleRequestDto;
 import com.sparta.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,10 +25,13 @@ public class ScheduleController {
         return scheduleService.createSchedule(requestDto);
     }
 
-    //  2.일정 전체 조회
+    //  2.일정 전체 조회 (페이징 추가)
     @GetMapping("")
-    public List<ScheduleResponseDto> getAllSchedules()  {
-        return scheduleService.getAllSchedules();
+    public Page<ScheduleResponseDto> getAllSchedules(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by("updatedAt").descending());
+        return scheduleService.getAllSchedules(pageable);
     }
 
     //  3.일정 단건 조회

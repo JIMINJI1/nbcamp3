@@ -8,6 +8,8 @@ import com.sparta.schedule.repository.ScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +43,10 @@ public class ScheduleService {
     }
 
 
-    //  2-1. 일정 전체 조회
-    public List<ScheduleResponseDto> getAllSchedules() {
-        return scheduleRepository.findAll().stream().map(ScheduleResponseDto::new).toList();
+    //  2-1. 일정 전체 조회 (페이징 추가)
+    public Page<ScheduleResponseDto> getAllSchedules(Pageable pageable) {
+        Page<Schedule> schedulePage = scheduleRepository.findAll(pageable);
+        return schedulePage.map(ScheduleResponseDto::new);
     }
 
     //  2-2. 일정 단건 조회
