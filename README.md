@@ -55,7 +55,11 @@
 
 
 ## 🔗 API 설계
-![image](https://github.com/user-attachments/assets/0a540b22-5a15-40cb-94c2-16885e37c159)
+![image](https://github.com/user-attachments/assets/5b162967-562c-4258-800f-49155c0b8f0a)
+![image](https://github.com/user-attachments/assets/ead7850a-0268-4d32-8180-7afdbc07a039)
+![image](https://github.com/user-attachments/assets/62529983-b6f5-4796-aa63-6c2d2452f67d)
+
+
 
 
 
