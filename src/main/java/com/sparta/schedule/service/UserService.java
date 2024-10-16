@@ -41,12 +41,10 @@ public class UserService {
         // entity -> responseDto
         return new UserResponseDto(
            user.getUserId(),
-           user.getEmail(),
            user.getUsername(),
-           user.getPassword(),
+           user.getEmail(),
            user.getCreatedAt(),
            user.getUpdatedAt()
-
         );
     }
 
