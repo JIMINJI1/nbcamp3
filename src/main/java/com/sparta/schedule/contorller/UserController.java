@@ -6,6 +6,7 @@ import com.sparta.schedule.dto.UpdateUserRequestDto;
 import com.sparta.schedule.dto.UserResponseDto;
 import com.sparta.schedule.service.ScheduleService;
 import com.sparta.schedule.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UserController {
 
     // 1. 유저 등록
     @PostMapping("")
-    public UserResponseDto createUser(@RequestBody CreateUserRequestDto requestdto) {
+    public UserResponseDto createUser(@Valid @RequestBody CreateUserRequestDto requestdto) {
         return userService.createUser(requestdto);
     }
 
@@ -31,7 +32,7 @@ public class UserController {
 
     // 3. 유저 수정
     @PutMapping("/{userId}")
-    public UserResponseDto updateUser(@PathVariable Long userId, @RequestBody UpdateUserRequestDto requestdto) {
+    public UserResponseDto updateUser(@PathVariable Long userId, @Valid @RequestBody UpdateUserRequestDto requestdto) {
         return userService.updateUser(userId,requestdto);
     }
 

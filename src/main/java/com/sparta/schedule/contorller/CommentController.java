@@ -2,10 +2,11 @@ package com.sparta.schedule.contorller;
 
 import com.sparta.schedule.dto.CommentResponseDto;
 import com.sparta.schedule.dto.CreateCommentRequestDto;
-import com.sparta.schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.dto.UpdateCommentRequestDto;
 import com.sparta.schedule.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class CommentController {
 
     // 1. 댓글 등록
     @PostMapping("")
-    public CommentResponseDto createComment(@RequestBody CreateCommentRequestDto requestDto) {
+    public CommentResponseDto createComment(@Valid @RequestBody CreateCommentRequestDto requestDto) {
         return commentService.createComment(requestDto);
     }
 
@@ -30,7 +31,7 @@ public class CommentController {
 
     // 3. 댓글 수정
     @PutMapping("/{commentId}")
-    public CommentResponseDto updateComment(@PathVariable Long commentId, @RequestBody UpdateCommentRequestDto requestDto) {
+    public CommentResponseDto updateComment(@PathVariable Long commentId, @Valid @RequestBody UpdateCommentRequestDto requestDto) {
         return commentService.updateComment(commentId, requestDto);
     }
     // 4. 댓글 삭제

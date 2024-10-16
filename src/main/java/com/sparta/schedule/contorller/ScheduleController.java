@@ -4,14 +4,13 @@ import com.sparta.schedule.dto.CreateScheduleRequestDto;
 import com.sparta.schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.dto.UpdateScheduleRequestDto;
 import com.sparta.schedule.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,7 +20,7 @@ public class ScheduleController {
 
     //  1.일정 등록
     @PostMapping("")
-    public ScheduleResponseDto createSchedule(@RequestBody CreateScheduleRequestDto requestDto) {
+    public ScheduleResponseDto createSchedule(@Valid @RequestBody CreateScheduleRequestDto requestDto) {
         return scheduleService.createSchedule(requestDto);
     }
 
@@ -42,7 +41,7 @@ public class ScheduleController {
 
     //  4.일정 수정
     @PutMapping("/{scheduleId}")
-    public ScheduleResponseDto updateSchedule(@PathVariable Long scheduleId, @RequestBody UpdateScheduleRequestDto requestDto) {
+    public ScheduleResponseDto updateSchedule(@PathVariable Long scheduleId, @Valid @RequestBody UpdateScheduleRequestDto requestDto) {
         return scheduleService.updateSchedule(scheduleId, requestDto);
     }
 
