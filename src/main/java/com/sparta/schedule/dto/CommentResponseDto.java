@@ -16,7 +16,7 @@ public class CommentResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private ScheduleResponseDto schedule;
+
 
     public CommentResponseDto(Comment comment) {
         this.commentId = comment.getCommentId();
@@ -24,7 +24,6 @@ public class CommentResponseDto {
         this.comment = comment.getComment();
         this.createdAt = comment.getCreatedAt();
         this.updatedAt = comment.getUpdatedAt();
-        this.schedule = new ScheduleResponseDto(comment.getSchedule());
     }
 
 

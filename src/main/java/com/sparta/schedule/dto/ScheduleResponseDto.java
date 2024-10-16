@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -16,6 +17,8 @@ public class ScheduleResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    private List<CommentResponseDto> comment;
+
 
 
     public ScheduleResponseDto(Schedule schedule) {
@@ -25,6 +28,9 @@ public class ScheduleResponseDto {
         this.content = schedule.getContent();
         this.createdAt = schedule.getCreatedAt();
         this.updatedAt = schedule.getUpdatedAt();
+
+        this.comment = schedule.getComments().stream()
+                .map(CommentResponseDto::new).toList();
     }
 
 }
