@@ -1,5 +1,6 @@
 package com.sparta.schedule.service;
 
+import com.sparta.schedule.dto.CommentResponseDto;
 import com.sparta.schedule.dto.CreateScheduleRequestDto;
 import com.sparta.schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.dto.UpdateScheduleRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -55,6 +57,11 @@ public class ScheduleService {
     public ScheduleResponseDto getScheduleById(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId) .orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
 
+        // Schedule에 있는 댓글 CommentResponseDto로 변환
+        List<CommentResponseDto> commentDtos = schedule.getComments().stream()
+                .map(CommentResponseDto::new)
+                .collect(Collectors.toList());
+
         // entity -> responseDto
         return new ScheduleResponseDto(
                 schedule.getScheduleId(),
@@ -62,7 +69,8 @@ public class ScheduleService {
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getCreatedAt(),
-                schedule.getUpdatedAt()
+                schedule.getUpdatedAt(),
+                commentDtos
         );
     }
 
