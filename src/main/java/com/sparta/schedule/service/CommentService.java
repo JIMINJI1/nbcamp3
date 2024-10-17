@@ -27,7 +27,7 @@ public class CommentService {
 
     // 1. 댓글 등록
     public CommentResponseDto createComment(CreateCommentRequestDto requestDto) {
-        // dto -> entity
+        // dto -> entity 변환 및 일정 조회
         Comment comment = new Comment(
                 requestDto.getUsername(),
                 requestDto.getComment(),
@@ -56,9 +56,11 @@ public class CommentService {
     public CommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto requestDto) {
         // 해당 댓글  DB에 있는지 확인
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("댓글이 존재하지 않습니다."));
-
+        
+        // 댓글 내용 업데이트
         comment.setComment(requestDto.getComment());
-
+        
+        // 변경된 댓글 저장
         Comment updatedComment = commentRepository.save(comment);
 
         return new CommentResponseDto(updatedComment);
@@ -67,12 +69,10 @@ public class CommentService {
     // 4. 댓글 삭제
     @Transactional
     public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElse(null);
+        // 해당 댓글  DB에 있는지 확인
+        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("댓글이 존재하지 않습니다."));
 
-        if(comment == null){
-            throw new IllegalArgumentException("댓글이 존재하지 않습니다");
-        }
-
+        // 댓글 삭제
         commentRepository.deleteById(commentId);
     }
 
