@@ -39,6 +39,7 @@ public class Comment {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
+    // 스케줄과 댓글 ( 하나의 스케줄 여러개 댓글)
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;

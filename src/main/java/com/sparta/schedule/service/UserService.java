@@ -36,6 +36,7 @@ public class UserService {
 
     // 2. 유저 조회
     public UserResponseDto getUserById(Long userId) {
+        // 주어진 ID로 유저 조회, 없으면 예외 발생
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저입니다."));
 
         // entity -> responseDto
@@ -52,12 +53,16 @@ public class UserService {
     // 3. 유저 수정
     @Transactional
     public UserResponseDto updateUser(Long userId, UpdateUserRequestDto requestDto) {
+        // 주어진 ID로 유저 조회, 없으면 예외 발생
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("해당 유저가 존재하지 않습니다."));
 
+        // 유저의 비밀번호 수정
         user.setPassword(requestDto.getPassword());
 
+        // 수정된 유저를 DB에 저장
         User updatedUser = userRepository.save(user);
 
+        // 수정된 유저를 Response DTO로 변환하여 반환
         return new UserResponseDto(updatedUser);
     }
 
@@ -65,16 +70,14 @@ public class UserService {
     // 4. 유저 삭제
     @Transactional
     public void deleteUser (Long userId){
-        User user = userRepository.findById(userId).orElse(null);
+        // 주어진 ID로 유저 조회, 없으면 예외 발생
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 
-        if(user == null){
-            throw new IllegalArgumentException("유저가 존재하지 않습니다");
-        }
+        // 유저 삭제
         userRepository.deleteById(userId);
 
     }
 
-    
-    
 }
 

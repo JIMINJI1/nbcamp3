@@ -31,6 +31,7 @@ public class ScheduleService {
     public ScheduleResponseDto createSchedule(CreateScheduleRequestDto requestDto){
         // dto -> entity
         Schedule schedule = new Schedule(
+                // 주어진 ID로 일정 조회, 없으면 예외 발생
                 userRepository.findById(requestDto.getUserId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다")),
                 requestDto.getTitle(),
                 requestDto.getContent()
@@ -49,12 +50,15 @@ public class ScheduleService {
 
     //  2-1. 일정 전체 조회 (페이징 추가)
     public Page<ScheduleResponseDto> getAllSchedules(Pageable pageable) {
+        // 모든 일정 페이징 처리하여 가져옴
         Page<Schedule> schedulePage = scheduleRepository.findAll(pageable);
+        // entity -> responsedto
         return schedulePage.map(ScheduleResponseDto::new);
     }
 
     //  2-2. 일정 단건 조회
     public ScheduleResponseDto getScheduleById(Long scheduleId) {
+        // 주어진 ID로 일정 조회, 없으면 예외 발생
         Schedule schedule = scheduleRepository.findById(scheduleId) .orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
 
         // Schedule에 있는 댓글 CommentResponseDto로 변환
@@ -80,22 +84,25 @@ public class ScheduleService {
         // 해당 일정 DB 있는지 확인
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
 
+        // 제목, 내용으로 수정
         schedule.setTitle(requestDto.getTitle());
         schedule.setContent(requestDto.getContent());
 
+        // 수정된 Schedule을 DB 저장
         Schedule updatedSchedule = scheduleRepository.save(schedule);
 
+        // Response DTO로 변환하여 반환
         return new ScheduleResponseDto(updatedSchedule);
     }
 
     //  4. 일정 삭제
     @Transactional
     public void deleteSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElse(null);
+        // 주어진 ID로 일정 조회, 없으면 예외 발생
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
 
-        if(schedule == null){
-            throw new IllegalArgumentException("일정이 존재하지 않습니다");
-        }
+        // 일정 삭제
         scheduleRepository.deleteById(scheduleId);
 
     }
