@@ -67,4 +67,12 @@ public class Schedule {
         this.updatedAt = updatedAt;
     }
 
+    public void updateTitleSchedule(String title){
+        this.title = title;
+    }
+
+    public void updateContentSchedule(String content){
+        this.content = content;
+    }
+
 }

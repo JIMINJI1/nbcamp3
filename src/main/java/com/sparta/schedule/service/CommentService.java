@@ -55,10 +55,10 @@ public class CommentService {
     @Transactional
     public CommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto requestDto) {
         // 해당 댓글  DB에 있는지 확인
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("댓글이 존재하지 않습니다."));
+        Comment comment = validateComment(commentId);
         
         // 댓글 내용 업데이트
-        comment.setComment(requestDto.getComment());
+        comment.updateComment(requestDto.getComment());
         
         // 변경된 댓글 저장
         Comment updatedComment = commentRepository.save(comment);
@@ -70,10 +70,16 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId) {
         // 해당 댓글  DB에 있는지 확인
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("댓글이 존재하지 않습니다."));
+        Comment comment = validateComment(commentId);
 
         // 댓글 삭제
         commentRepository.deleteById(commentId);
     }
+
+    // 댓글 존재 확인 메소드
+    public Comment validateComment(Long commendId){
+        return commentRepository.findById(commendId).orElseThrow(()-> new EntityNotFoundException("댓글이 존재하지 않습니다."));
+    }
+
 
 }

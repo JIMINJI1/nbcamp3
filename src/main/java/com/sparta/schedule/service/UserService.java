@@ -57,7 +57,7 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("해당 유저가 존재하지 않습니다."));
 
         // 유저의 비밀번호 수정
-        user.setPassword(requestDto.getPassword());
+        user.updateUser(requestDto.getPassword());
 
         // 수정된 유저를 DB에 저장
         User updatedUser = userRepository.save(user);

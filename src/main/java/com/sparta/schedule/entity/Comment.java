@@ -46,4 +46,9 @@ public class Comment {
         this.schedule = schedule;
     }
 
+    // 댓글 수정
+    public void updateComment(String comment) {
+        this.comment = comment;
+    }
+
 }

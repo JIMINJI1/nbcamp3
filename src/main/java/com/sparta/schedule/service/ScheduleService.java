@@ -85,8 +85,12 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
 
         // 제목, 내용으로 수정
-        schedule.setTitle(requestDto.getTitle());
-        schedule.setContent(requestDto.getContent());
+        if(requestDto.getTitle()!=null){
+            schedule.updateTitleSchedule(requestDto.getTitle());
+        }
+        if(requestDto.getContent()!=null){
+            schedule.updateContentSchedule(requestDto.getContent());
+        }
 
         // 수정된 Schedule을 DB 저장
         Schedule updatedSchedule = scheduleRepository.save(schedule);
