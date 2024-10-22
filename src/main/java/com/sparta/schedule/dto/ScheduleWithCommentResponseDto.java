@@ -5,10 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ScheduleResponseDto {
+public class ScheduleWithCommentResponseDto {
     private Long scheduleId;
     private String username;
     private String title;
@@ -16,15 +17,18 @@ public class ScheduleResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public ScheduleResponseDto(Schedule schedule) {
+    private List<CommentResponseDto> comment;
+
+
+    public ScheduleWithCommentResponseDto(Schedule schedule) {
         this.scheduleId = schedule.getScheduleId();
         this.username = schedule.getUser() != null ? schedule.getUser().getUsername() : null;
         this.title = schedule.getTitle();
         this.content = schedule.getContent();
         this.createdAt = schedule.getCreatedAt();
         this.updatedAt = schedule.getUpdatedAt();
+
+        this.comment = schedule.getComments().stream()
+                .map(CommentResponseDto::new).toList();
     }
-
 }
-
-

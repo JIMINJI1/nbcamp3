@@ -1,9 +1,6 @@
 package com.sparta.schedule.service;
 
-import com.sparta.schedule.dto.CommentResponseDto;
-import com.sparta.schedule.dto.CreateScheduleRequestDto;
-import com.sparta.schedule.dto.ScheduleResponseDto;
-import com.sparta.schedule.dto.UpdateScheduleRequestDto;
+import com.sparta.schedule.dto.*;
 import com.sparta.schedule.entity.Schedule;
 import com.sparta.schedule.repository.ScheduleRepository;
 import com.sparta.schedule.repository.UserRepository;
@@ -57,7 +54,7 @@ public class ScheduleService {
     }
 
     //  2-2. 일정 단건 조회
-    public ScheduleResponseDto getScheduleById(Long scheduleId) {
+    public ScheduleWithCommentResponseDto getScheduleById(Long scheduleId) {
         // 주어진 ID로 일정 조회, 없으면 예외 발생
         Schedule schedule = validateSchedule(scheduleId);
 
@@ -67,7 +64,7 @@ public class ScheduleService {
                 .collect(Collectors.toList());
 
         // entity -> responseDto
-        return new ScheduleResponseDto(
+        return new ScheduleWithCommentResponseDto(
                 schedule.getScheduleId(),
                 schedule.getUser().getUsername(),
                 schedule.getTitle(),
@@ -116,5 +113,6 @@ public class ScheduleService {
                 .orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
     }
 
-
 }
+
+

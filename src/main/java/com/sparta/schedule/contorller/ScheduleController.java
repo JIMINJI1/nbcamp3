@@ -2,6 +2,7 @@ package com.sparta.schedule.contorller;
 
 import com.sparta.schedule.dto.CreateScheduleRequestDto;
 import com.sparta.schedule.dto.ScheduleResponseDto;
+import com.sparta.schedule.dto.ScheduleWithCommentResponseDto;
 import com.sparta.schedule.dto.UpdateScheduleRequestDto;
 import com.sparta.schedule.service.ScheduleService;
 import jakarta.validation.Valid;
@@ -27,15 +28,15 @@ public class ScheduleController {
     //  2.일정 전체 조회 (페이징 추가)
     @GetMapping("")
     public Page<ScheduleResponseDto> getAllSchedules(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page,size, Sort.by("updatedAt").descending());
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updatedAt").descending());
         return scheduleService.getAllSchedules(pageable);
     }
 
     //  3.일정 단건 조회
     @GetMapping("/{scheduleId}")
-    public ScheduleResponseDto getScheduleById(@PathVariable Long scheduleId) {
+    public ScheduleWithCommentResponseDto getScheduleById(@PathVariable Long scheduleId) {
         return scheduleService.getScheduleById(scheduleId);
     }
 
@@ -50,6 +51,6 @@ public class ScheduleController {
     public void deleteSchedule(@PathVariable Long scheduleId) {
         scheduleService.deleteSchedule(scheduleId);
     }
-
-
 }
+
+
