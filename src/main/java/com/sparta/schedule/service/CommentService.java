@@ -6,6 +6,7 @@ import com.sparta.schedule.dto.UpdateCommentRequestDto;
 import com.sparta.schedule.entity.Comment;
 import com.sparta.schedule.repository.CommentRepository;
 import com.sparta.schedule.repository.ScheduleRepository;
+import com.sparta.schedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -24,12 +25,13 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     // 1. 댓글 등록
     public CommentResponseDto createComment(CreateCommentRequestDto requestDto) {
         // dto -> entity 변환 및 일정 조회
         Comment comment = new Comment(
-                requestDto.getUsername(),
+                userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다.")),
                 requestDto.getComment(),
                 scheduleRepository.findById(requestDto.getScheduleId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다"))
         );

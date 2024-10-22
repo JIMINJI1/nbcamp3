@@ -12,17 +12,17 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Getter
-@Table(name="comment")
+@Table(name = "comment")
 @NoArgsConstructor
 
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="comment_id", nullable=false, updatable=false)
+    @Column(name = "comment_id", nullable = false, updatable = false)
     private Long commentId;
 
-    @Column(name = "username", nullable = false)
-    private String username;
+//    @Column(name = "username", nullable = false)
+//    private String username;
 
     @Column(name = "comment", nullable = false)
     private String comment;
@@ -36,12 +36,17 @@ public class Comment {
     private LocalDateTime updatedAt;
 
     // 스케줄과 댓글 ( 하나의 스케줄 여러개 댓글)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
-    public Comment(String username, String comment, Schedule schedule) {
-        this.username = username;
+    // 유저와 댓글 (한명의 유저의 여래개의 댓글)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Comment(User user, String comment, Schedule schedule) {
+        this.user = user;
         this.comment = comment;
         this.schedule = schedule;
     }

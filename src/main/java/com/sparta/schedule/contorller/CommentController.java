@@ -6,7 +6,6 @@ import com.sparta.schedule.dto.UpdateCommentRequestDto;
 import com.sparta.schedule.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +33,7 @@ public class CommentController {
     public CommentResponseDto updateComment(@PathVariable Long commentId, @Valid @RequestBody UpdateCommentRequestDto requestDto) {
         return commentService.updateComment(commentId, requestDto);
     }
+
     // 4. 댓글 삭제
     @DeleteMapping("/{commentId}")
     public void deleteComment(@PathVariable Long commentId) {
