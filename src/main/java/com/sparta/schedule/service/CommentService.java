@@ -4,6 +4,7 @@ import com.sparta.schedule.dto.CommentResponseDto;
 import com.sparta.schedule.dto.CreateCommentRequestDto;
 import com.sparta.schedule.dto.UpdateCommentRequestDto;
 import com.sparta.schedule.entity.Comment;
+import com.sparta.schedule.entity.User;
 import com.sparta.schedule.repository.CommentRepository;
 import com.sparta.schedule.repository.ScheduleRepository;
 import com.sparta.schedule.repository.UserRepository;
@@ -28,12 +29,12 @@ public class CommentService {
     private final UserRepository userRepository;
 
     // 1. 댓글 등록
-    public CommentResponseDto createComment(CreateCommentRequestDto requestDto) {
+    public CommentResponseDto createComment(CreateCommentRequestDto requestDto, Long scheduleId, User user) {
         // dto -> entity 변환 및 일정 조회
         Comment comment = new Comment(
-                userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다.")),
+                userRepository.findById(user.getUserId()).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다.")),
                 requestDto.getComment(),
-                scheduleRepository.findById(requestDto.getScheduleId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다"))
+                scheduleRepository.findById(scheduleId).orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다"))
         );
 
         // DB 저장
@@ -47,7 +48,7 @@ public class CommentService {
     }
 
     // 2. 댓글 조회
-    public List<CommentResponseDto> getCommentsByScheduleId(Long scheduleId) {
+    public List<CommentResponseDto> getCommentsByScheduleId(Long scheduleId, User user) {
         return commentRepository.findBySchedule_ScheduleId(scheduleId).stream()
                 .map(CommentResponseDto::new).collect(Collectors.toList());
     }
@@ -55,13 +56,13 @@ public class CommentService {
 
     // 3. 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto requestDto) {
+    public CommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto requestDto, User user) {
         // 해당 댓글  DB에 있는지 확인
         Comment comment = validateComment(commentId);
-        
+
         // 댓글 내용 업데이트
         comment.updateComment(requestDto.getComment());
-        
+
         // 변경된 댓글 저장
         Comment updatedComment = commentRepository.save(comment);
 
@@ -70,7 +71,7 @@ public class CommentService {
 
     // 4. 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, User user) {
         // 해당 댓글  DB에 있는지 확인
         Comment comment = validateComment(commentId);
 
@@ -79,8 +80,8 @@ public class CommentService {
     }
 
     // 댓글 존재 확인 메소드
-    public Comment validateComment(Long commendId){
-        return commentRepository.findById(commendId).orElseThrow(()-> new EntityNotFoundException("댓글이 존재하지 않습니다."));
+    public Comment validateComment(Long commendId) {
+        return commentRepository.findById(commendId).orElseThrow(() -> new EntityNotFoundException("댓글이 존재하지 않습니다."));
     }
 
 
