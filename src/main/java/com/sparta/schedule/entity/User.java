@@ -40,14 +40,19 @@ public class User {
     @Column(name="update_date", nullable=false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable=false)
+    @Enumerated(value=EnumType.STRING)
+    private UserRoleEnum role;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Schedule> schedules = new ArrayList<>();
 
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password, UserRoleEnum role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public void updateUser(String password){
