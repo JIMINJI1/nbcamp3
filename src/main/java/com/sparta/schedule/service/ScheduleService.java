@@ -2,6 +2,7 @@ package com.sparta.schedule.service;
 
 import com.sparta.schedule.dto.*;
 import com.sparta.schedule.entity.Schedule;
+import com.sparta.schedule.entity.User;
 import com.sparta.schedule.repository.ScheduleRepository;
 import com.sparta.schedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,11 +26,11 @@ public class ScheduleService {
     private final UserRepository userRepository;
     
     // 1. 일정 등록
-    public ScheduleResponseDto createSchedule(CreateScheduleRequestDto requestDto){
+    public ScheduleResponseDto createSchedule(CreateScheduleRequestDto requestDto, User user){
         // dto -> entity
         Schedule schedule = new Schedule(
                 // 주어진 ID로 일정 조회, 없으면 예외 발생
-                userRepository.findById(requestDto.getUserId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다")),
+                userRepository.findById(user.getUserId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다")),
                 requestDto.getTitle(),
                 requestDto.getContent()
         );
@@ -46,7 +47,7 @@ public class ScheduleService {
 
 
     //  2-1. 일정 전체 조회 (페이징 추가)
-    public Page<ScheduleResponseDto> getAllSchedules(Pageable pageable) {
+    public Page<ScheduleResponseDto> getAllSchedules(Pageable pageable, User user) {
         // 모든 일정 페이징 처리하여 가져옴
         Page<Schedule> schedulePage = scheduleRepository.findAll(pageable);
         // entity -> responsedto
@@ -54,7 +55,7 @@ public class ScheduleService {
     }
 
     //  2-2. 일정 단건 조회
-    public ScheduleWithCommentResponseDto getScheduleById(Long scheduleId) {
+    public ScheduleWithCommentResponseDto getScheduleById(Long scheduleId, User user) {
         // 주어진 ID로 일정 조회, 없으면 예외 발생
         Schedule schedule = validateSchedule(scheduleId);
 
@@ -77,7 +78,7 @@ public class ScheduleService {
 
     //  3. 일정 수정
     @Transactional
-    public ScheduleResponseDto updateSchedule(Long scheduleId, UpdateScheduleRequestDto requestDto) {
+    public ScheduleResponseDto updateSchedule(Long scheduleId, UpdateScheduleRequestDto requestDto, User user) {
         // 해당 일정 DB 있는지 확인
         Schedule schedule = validateSchedule(scheduleId);
 
@@ -98,7 +99,7 @@ public class ScheduleService {
 
     //  4. 일정 삭제
     @Transactional
-    public void deleteSchedule(Long scheduleId) {
+    public void deleteSchedule(Long scheduleId, User user) {
         // 주어진 ID로 일정 조회, 없으면 예외 발생
         Schedule schedule = validateSchedule(scheduleId);
 
