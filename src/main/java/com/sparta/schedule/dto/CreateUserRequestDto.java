@@ -3,6 +3,7 @@ package com.sparta.schedule.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
 @Getter
 
@@ -17,4 +18,9 @@ public class CreateUserRequestDto {
 
     @NotBlank(message=" 패스워드는 필수 항목입니다.")
     private String password;
+
+    
+    //관리자 가입용 adminToken
+    private String adminToken;
+
 }
