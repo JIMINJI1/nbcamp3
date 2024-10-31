@@ -9,10 +9,13 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -38,7 +41,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             null
                     )
             );
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
@@ -61,8 +64,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // 인증 실패
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        log.error("인증 실패: {}", failed.getMessage());
-        response.setStatus(401);
+        String errorMessage;
+
+        if (failed instanceof BadCredentialsException) {
+            errorMessage = "이메일 또는 비밀번호가 잘못되었습니다."; // 이메일 또는 비밀번호 오류 메시지
+        } else {
+            errorMessage = "인증 실패 " + failed.getMessage(); // 기본 오류 메시지
+        }
+
+        log.error("인증 실패- {}", errorMessage);
+        request.setAttribute("exception", errorMessage); // request에 설정하여 후속 처리에서 사용
+
+        // 401 상태 코드 설정
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
+
 
 }

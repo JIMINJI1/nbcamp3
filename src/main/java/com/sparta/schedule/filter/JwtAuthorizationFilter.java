@@ -34,25 +34,36 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 요청 헤더에서 jwt 추출
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
-        if (StringUtils.hasText(tokenValue)) {
-
-            if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("Token Error");
-                return;
-            }
-
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
-            try {
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
-            }
+        // 토큰이 없거나 비어있는 경우 처리
+        if (!StringUtils.hasText(tokenValue)) {
+            log.error("토큰이 없습니다."); // 로그 추가
+            req.setAttribute("exception", "TokenMissing"); // 예외 처리 속성 설정
+            filterChain.doFilter(req, res); // 다음 필터로 진행
+            return; // 필터 체인 종료
         }
 
+        // 토큰이 있는 경우 검증
+        if (!jwtUtil.validateToken(tokenValue)) {
+            log.error("Token Error");
+            req.setAttribute("exception", "ExpiredJwtException"); // 예외 처리 속성 설정
+            filterChain.doFilter(req, res); // 다음 필터로 진행
+            return; // 필터 체인 종료
+        }
+
+        // 유효한 토큰의 경우 사용자 정보를 추출하여 인증 설정
+        Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+        try {
+            setAuthentication(info.getSubject());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return;
+        }
+
+        // 다음 필터로 진행
         filterChain.doFilter(req, res);
+
     }
+
 
     // 인증 처리
     public void setAuthentication(String email) {
