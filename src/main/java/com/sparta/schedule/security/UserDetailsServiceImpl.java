@@ -15,8 +15,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     //username에서 email로 변경
-    //예외처리메세지 바꾸는방법
-    //
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
