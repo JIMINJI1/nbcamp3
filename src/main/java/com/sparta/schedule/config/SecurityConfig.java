@@ -1,7 +1,5 @@
 package com.sparta.schedule.config;
 
-import com.sparta.schedule.JwtAccessDeniedHandler;
-import com.sparta.schedule.JwtAuthenticationEntryPoint;
 import com.sparta.schedule.filter.JwtAuthenticationFilter;
 import com.sparta.schedule.filter.JwtAuthorizationFilter;
 import com.sparta.schedule.jwt.JwtUtil;
