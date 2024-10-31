@@ -1,5 +1,7 @@
 package com.sparta.schedule.config;
 
+import com.sparta.schedule.JwtAccessDeniedHandler;
+import com.sparta.schedule.JwtAuthenticationEntryPoint;
 import com.sparta.schedule.filter.JwtAuthenticationFilter;
 import com.sparta.schedule.filter.JwtAuthorizationFilter;
 import com.sparta.schedule.jwt.JwtUtil;
@@ -27,6 +29,8 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     //    PasswordEncoder 빈 설정 (비밀번호)
     @Bean
@@ -72,10 +76,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/signup").permitAll() // '/api/user/signup'로 시작하는 요청 모두 접근 허가
                         .requestMatchers("/api/user/login").permitAll()
                         // 일정 수정,삭제 권한 -> 관리자만
-                        .requestMatchers(HttpMethod.PUT,"/api/schedule/{scheduleId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/api/schedule/{scheduleId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/schedule/{scheduleId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/schedule/{scheduleId}").hasRole("ADMIN")
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
+
+        // 예외 처리 설정
+        http.exceptionHandling((exceptionHandling) ->
+                exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint) //인증 예외 처리
+                        .accessDeniedHandler(jwtAccessDeniedHandler) //인가 예외 처리
+        );
+
 
         // 필터 관리
         // 필터 체인에서 필터 순서 지정
