@@ -3,7 +3,6 @@ package com.sparta.schedule.service;
 import com.sparta.schedule.dto.*;
 import com.sparta.schedule.entity.User;
 import com.sparta.schedule.entity.UserRoleEnum;
-import com.sparta.schedule.jwt.JwtUtil;
 import com.sparta.schedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     // ADMIN_TOKEN
     @Value("${admin.token}")
