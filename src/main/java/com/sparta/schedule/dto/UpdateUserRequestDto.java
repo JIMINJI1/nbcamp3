@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class UpdateUserRequestDto {
-    @NotBlank(message = "패스워드는 필수 항목입니다.")
+    @NotBlank(message = "비밀번호를 입력해 주세요")
     private String password;
 }
