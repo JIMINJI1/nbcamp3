@@ -50,7 +50,7 @@ public class ScheduleController {
 
     //  4.일정 수정
     @PutMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long scheduleId, @Valid @RequestBody UpdateScheduleRequestDto requestDto,
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody UpdateScheduleRequestDto requestDto,
                                                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(scheduleService.updateSchedule(scheduleId, requestDto, userDetails.getUser()));
     }

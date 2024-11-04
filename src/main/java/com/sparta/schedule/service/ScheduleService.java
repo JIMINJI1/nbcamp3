@@ -24,13 +24,13 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
-    
+
     // 1. 일정 등록
-    public ScheduleResponseDto createSchedule(CreateScheduleRequestDto requestDto, User user){
+    public ScheduleResponseDto createSchedule(CreateScheduleRequestDto requestDto, User user) {
         // dto -> entity
         Schedule schedule = new Schedule(
                 // 주어진 ID로 일정 조회, 없으면 예외 발생
-                userRepository.findById(user.getUserId()).orElseThrow(()->new EntityNotFoundException("일정이 존재하지 않습니다")),
+                userRepository.findById(user.getUserId()).orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다")),
                 requestDto.getTitle(),
                 requestDto.getContent()
         );
@@ -57,7 +57,7 @@ public class ScheduleService {
     //  2-2. 일정 단건 조회
     public ScheduleWithCommentResponseDto getScheduleById(Long scheduleId, User user) {
         // 주어진 ID로 일정 조회, 없으면 예외 발생
-        Schedule schedule = validateSchedule(scheduleId);
+        Schedule schedule = findSchedule(scheduleId);
 
         // Schedule에 있는 댓글 CommentResponseDto로 변환
         List<CommentResponseDto> commentDtos = schedule.getComments().stream()
@@ -80,13 +80,20 @@ public class ScheduleService {
     @Transactional
     public ScheduleResponseDto updateSchedule(Long scheduleId, UpdateScheduleRequestDto requestDto, User user) {
         // 해당 일정 DB 있는지 확인
-        Schedule schedule = validateSchedule(scheduleId);
+        Schedule schedule = findSchedule(scheduleId);
 
         // 제목, 내용으로 수정
-        if(requestDto.getTitle()!=null){
+        if (requestDto.getTitle() != null) {
+            if (requestDto.getTitle().isBlank()) {
+                throw new IllegalArgumentException("일정 제목을 입력해 주세요");
+            }
             schedule.updateTitleSchedule(requestDto.getTitle());
         }
-        if(requestDto.getContent()!=null){
+
+        if (requestDto.getContent() != null) {
+            if (requestDto.getContent().isBlank()) {
+                throw new IllegalArgumentException("일정 내용을 입력해 주세요");
+            }
             schedule.updateContentSchedule(requestDto.getContent());
         }
 
@@ -101,15 +108,15 @@ public class ScheduleService {
     @Transactional
     public void deleteSchedule(Long scheduleId, User user) {
         // 주어진 ID로 일정 조회, 없으면 예외 발생
-        Schedule schedule = validateSchedule(scheduleId);
+        Schedule schedule = findSchedule(scheduleId);
 
         // 일정 삭제
-        scheduleRepository.deleteById(scheduleId);
+        scheduleRepository.delete(schedule);
 
     }
 
     // 일정 존재 확인 메소드
-    public Schedule validateSchedule (Long scheduleId){
+    public Schedule findSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."));
     }
