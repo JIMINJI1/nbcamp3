@@ -6,10 +6,10 @@ import com.sparta.schedule.entity.UserRoleEnum;
 import com.sparta.schedule.jwt.JwtUtil;
 import com.sparta.schedule.security.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -63,21 +63,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 인증 실패
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        String errorMessage;
-
-        if (failed instanceof BadCredentialsException) {
-            errorMessage = "이메일 또는 비밀번호가 잘못되었습니다."; // 이메일 또는 비밀번호 오류 메시지
-        } else {
-            errorMessage = "인증 실패 " + failed.getMessage(); // 기본 오류 메시지
-        }
-
-        log.error("인증 실패- {}", errorMessage);
-        request.setAttribute("exception", errorMessage); // request에 설정하여 후속 처리에서 사용
-
-        // 401 상태 코드 설정
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        response.setContentType("application/json; charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        int status = HttpServletResponse.SC_UNAUTHORIZED;
+        String errorMessage = "이메일 또는 비밀번호를 잘못 입력하였습니다.";
+
+        String jsonResponse = String.format("{\"status\": %d, \"errorMessage\": \"%s\"}", status, errorMessage);
+        response.getWriter().write(jsonResponse);
+        response.getWriter().flush(); // 버퍼 비우기
+
     }
-
-
 }

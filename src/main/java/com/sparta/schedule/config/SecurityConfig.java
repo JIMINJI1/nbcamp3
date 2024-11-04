@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    //    PasswordEncoder 빈 설정 (비밀번호)
+    //PasswordEncoder 빈 설정 (비밀번호)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -71,7 +71,9 @@ public class SecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-                        .requestMatchers("/api/user/signup").permitAll() // '/api/user/signup'로 시작하는 요청 모두 접근 허가
+                        // '/api/user/signup'로 시작하는 요청 모두 접근 허가
+                        // 접근은 허가 되지만 필터체인을 안 타는건 아님!접근O 우회X
+                        .requestMatchers("/api/user/signup").permitAll()
                         .requestMatchers("/api/user/login").permitAll()
                         // 일정 수정,삭제 권한 -> 관리자만
                         .requestMatchers(HttpMethod.PUT, "/api/schedule/{scheduleId}").hasRole("ADMIN")

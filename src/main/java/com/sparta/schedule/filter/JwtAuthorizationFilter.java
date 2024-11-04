@@ -31,6 +31,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+        log.info("Request URI: {}", req.getRequestURI());
+
+
+        // 회원가입,로그인 API 필터 안 타게 우회
+        if (req.getRequestURI().startsWith("/api/user/signup") || req.getRequestURI().startsWith("/api/user/login")) {
+            filterChain.doFilter(req, res);
+            return;
+        }
+
         // 요청 헤더에서 jwt 추출
         String tokenValue = jwtUtil.getJwtFromHeader(req);
 
