@@ -10,7 +10,6 @@ import com.sparta.schedule.repository.ScheduleRepository;
 import com.sparta.schedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +33,7 @@ public class CommentService {
         Comment comment = new Comment(
                 userRepository.findById(user.getUserId()).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다.")),
                 requestDto.getComment(),
-                scheduleRepository.findById(scheduleId).orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다"))
+                scheduleRepository.findById(scheduleId).orElseThrow(() -> new EntityNotFoundException("일정이 존재하지 않습니다."))
         );
 
         // DB 저장
@@ -58,7 +57,7 @@ public class CommentService {
     @Transactional
     public CommentResponseDto updateComment(Long commentId, UpdateCommentRequestDto requestDto, User user) {
         // 해당 댓글  DB에 있는지 확인
-        Comment comment = validateComment(commentId);
+        Comment comment = findComment(commentId);
 
         // 댓글 내용 업데이트
         comment.updateComment(requestDto.getComment());
@@ -73,16 +72,14 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, User user) {
         // 해당 댓글  DB에 있는지 확인
-        Comment comment = validateComment(commentId);
+        Comment comment = findComment(commentId);
 
         // 댓글 삭제
-        commentRepository.deleteById(commentId);
+        commentRepository.delete(comment);
     }
 
     // 댓글 존재 확인 메소드
-    public Comment validateComment(Long commendId) {
+    public Comment findComment(Long commendId) {
         return commentRepository.findById(commendId).orElseThrow(() -> new EntityNotFoundException("댓글이 존재하지 않습니다."));
     }
-
-
 }

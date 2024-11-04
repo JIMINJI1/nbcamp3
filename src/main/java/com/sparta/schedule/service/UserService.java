@@ -79,7 +79,7 @@ public class UserService {
     // 3. 유저 조회
     public UserResponseDto getUserById(Long userId, User user) {
         // 주어진 ID로 유저 조회, 없으면 예외 발생
-        User existingUser = validateUser(userId);
+        User existingUser = findUser(userId);
 
         // entity -> responseDto
         return new UserResponseDto(
@@ -96,7 +96,7 @@ public class UserService {
     @Transactional
     public UserResponseDto updateUser(Long userId, UpdateUserRequestDto requestDto, User user) {
         // 주어진 ID로 유저 조회, 없으면 예외 발생
-        User existingUser = validateUser(userId);
+        User existingUser = findUser(userId);
 
         // 비밀번호 해시 처리
         String hashPassword = hashPassword(requestDto.getPassword());
@@ -115,15 +115,15 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId, User user) {
         // 주어진 ID로 유저 조회, 없으면 예외 발생
-        User existingUser = validateUser(userId);
+        User existingUser = findUser(userId);
 
         // 유저 삭제
-        userRepository.deleteById(userId);
+        userRepository.delete(existingUser);
 
     }
 
     // 유저 존재 확인 메소드
-    public User validateUser(Long userId) {
+    public User findUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
     }
